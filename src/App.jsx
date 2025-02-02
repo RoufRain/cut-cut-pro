@@ -10,10 +10,10 @@ function Square({ value, onSquareClick }) {
     </button>
   );
 }
-export default function Board() {
-  const [squares, setSquares] = useState(Array(9).fill(null));
-
-  const [xIsNext, setXIsNext] = useState(true);
+function Board({ xIsNext, squares, onPlay }) {
+  //   const [squares, setSquares] = useState(Array(9).fill(null));
+  //
+  //   const [xIsNext, setXIsNext] = useState(true);
 
   //declear winner
   const winner = calculateWinner(squares);
@@ -36,8 +36,9 @@ export default function Board() {
     } else {
       nextSquares[i] = "O";
     }
-    setSquares(nextSquares);
-    setXIsNext(!xIsNext);
+    onPlay(nextSquares);
+    // setSquares(nextSquares);
+    // setXIsNext(!xIsNext);
   }
 
   return (
@@ -86,6 +87,57 @@ export default function Board() {
         ></Square>
       </div>
     </>
+  );
+}
+
+//create function for history of game
+export default function Game() {
+  const [history, setHistory] = useState([Array(9).fill(null)]);
+
+  const [xIsNext, setXIsNext] = useState(true);
+  const [currentMove, setCurrentMove] = useState(0);
+
+  const currentSquares = history[currentMove];
+
+  //function for
+  function handlePlay(nextSquares) {
+    setXIsNext(!xIsNext);
+    //for next history after button click
+    const nextHistory = [...history.slice(0, currentMove + 1), nextSquares];
+
+    setHistory(nextHistory);
+    setCurrentMove(nextHistory.length - 1);
+  }
+
+  //after clicking button
+  function jumpTo(move) {
+    setCurrentMove(move);
+    setXIsNext(move % 2 === 0);
+  }
+
+  const moves = history.map((squares, move) => {
+    let description;
+    if (move > 0) {
+      description = `Go To The Move # ${move}`;
+    } else {
+      description = `Go To The start Game!`;
+    }
+    return (
+      <li key={move}>
+        <button onClick={() => jumpTo(move)}>{description}</button>
+      </li>
+    );
+  });
+
+  return (
+    <div>
+      <div>
+        <Board xIsNext={xIsNext} squares={currentSquares} onPlay={handlePlay}>
+          {" "}
+        </Board>
+      </div>
+      <div>{moves}</div>
+    </div>
   );
 }
 
