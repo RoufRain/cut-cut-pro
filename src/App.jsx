@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { useState } from "react";
 
 function Square({ value, onSquareClick }) {
@@ -123,20 +124,20 @@ export default function Game() {
       description = `Go To The start Game!`;
     }
     return (
-      <li key={move}>
+      <li key={move} className="bg-slate-300 p-1">
         <button onClick={() => jumpTo(move)}>{description}</button>
       </li>
     );
   });
 
   return (
-    <div>
+    <div className="flex gap-8 m-2">
       <div>
         <Board xIsNext={xIsNext} squares={currentSquares} onPlay={handlePlay}>
           {" "}
         </Board>
       </div>
-      <div>{moves}</div>
+      <div className="border border-black">{moves}</div>
     </div>
   );
 }
